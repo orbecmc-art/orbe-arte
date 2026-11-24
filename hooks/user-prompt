@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# UserPromptSubmit hook do plugin Orbe Arte: se a mensagem parece pedido de arte, lembra de
+# usar a skill /arte antes de gerar. Em qualquer outra mensagem não escreve nada.
+# Compatível com bash 3.2 (macOS): sem ${var,,}, sem comando externo, sem subshell.
+
+trap '' PIPE
+
+# Rodado à mão num terminal não há JSON na entrada: sai sem esperar.
+if [ -t 0 ]; then exit 0; fi
+
+input=""
+IFS= read -r -d '' input || true
+
+# Pega só o texto do prompt: descarta tudo até o campo "prompt" (cwd, caminhos e afins ficam de fora).
+p="${input#*\"prompt\":\"}"
+if [ "$p" = "$input" ]; then
+  p="${input#*\"prompt\": \"}"
+  if [ "$p" = "$input" ]; then exit 0; fi
+fi
+
+# Ignora maiúsculas e minúsculas (bash). Sem isso (zsh) valem só as minúsculas.
+shopt -s nocasematch 2>/dev/null || true
+
+# Quem já digitou o comando não precisa de lembrete.
+case "$p" in
+  /arte*|/orbe-arte*) exit 0 ;;
+esac
+
+# Espaços nas pontas fazem toda palavra ter um limite dos dois lados.
+p=" ${p} "
+
+case "$p" in
+  *[[:space:][:punct:]]arte[[:space:][:punct:]]*|*[[:space:][:punct:]]artes[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]criativo[[:space:][:punct:]]*|*[[:space:][:punct:]]criativos[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]carrossel[[:space:][:punct:]]*|*[[:space:][:punct:]]carrosseis[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]reels[[:space:][:punct:]]*|*[[:space:][:punct:]]stories[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]posts[[:space:][:punct:]]*|*[[:space:][:punct:]]post[[:space:].,:!?]*| \
+  *[[:space:][:punct:]]banner[[:space:][:punct:]]*|*[[:space:][:punct:]]flyer[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]thumbnail[[:space:][:punct:]]*|*[[:space:][:punct:]]slop[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]logotipo[[:space:][:punct:]]*|*[[:space:][:punct:]]logomarca[[:space:][:punct:]]*| \
+  *[[:space:][:punct:]]minha\ logo[[:space:][:punct:]]*|*[[:space:][:punct:]]sua\ logo[[:space:][:punct:]]*|*[[:space:][:punct:]]nossa\ logo[[:space:][:punct:]]*| \
+  *gpt[[:space:]-]image*)
+    printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"UserPromptSubmit","additionalContext":"Orbe Arte: este pedido parece ser de arte, post ou criativo. Use a skill /arte (orbe-arte:arte) antes de gerar qualquer coisa: brainstorm primeiro, logo e pessoa identicos ao arquivo enviado, anti-slop. Se nao for pedido de arte, ignore este aviso."}}' 2>/dev/null || true
+    ;;
+esac
+exit 0

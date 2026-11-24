@@ -1,0 +1,14 @@
+{
+  "name": "orbe-arte",
+  "owner": { "name": "Orbe Assessoria" },
+  "description": "Marketplace do plugin Orbe Arte: o comando /arte para criar artes premium sem cara de IA.",
+  "plugins": [
+    {
+      "name": "orbe-arte",
+      "source": "./",
+      "description": "Comando /arte: diretor de arte premium anti-slop para redes sociais. Brainstorm, 3 direções e prompt final para o GPT Image, com logo e pessoa 100% fiéis ao arquivo.",
+      "category": "design",
+      "tags": ["arte", "social media", "gpt image", "anti-slop"]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# SessionStart hook do plugin Orbe Arte: avisa, uma vez por sessão, que o /arte existe
+# e quais regras valem para qualquer pedido de arte. Texto curto de propósito.
+# Não roda nenhum comando externo nem subshell, para funcionar mesmo com PATH vazio
+# e para ficar rápido no Git Bash do Windows (mesmo motivo do DevOrb).
+
+trap '' PIPE
+
+printf '%s\n' '{"hookSpecificOutput":{"hookEventName":"SessionStart","additionalContext":"Orbe Arte instalado. Para qualquer pedido de arte, post, criativo, capa, carrossel, stories ou prompt de imagem, use a skill /arte (orbe-arte:arte) antes de gerar qualquer coisa. Regras fixas: 1) brainstorm com perguntas antes de gerar, nunca chutar; 2) logo, marca, rotulo, QR e texto legal ficam identicos ao arquivo enviado, defeitos inclusos; 3) pessoa e produto da foto nao mudam; 4) anti-slop: no minimo 40 por cento de respiro, 1 heroi, 1 titulo, 1 linha de apoio, 1 assinatura, nenhum icone. Pedidos que nao sao de arte ignoram isto."}}' 2>/dev/null || true
+exit 0

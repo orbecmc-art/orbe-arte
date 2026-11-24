@@ -1,0 +1,9 @@
+{
+  "name": "orbe-arte",
+  "version": "1.0.0",
+  "description": "Comando /arte: diretor de arte premium anti-slop para redes sociais. Brainstorm, 3 direções e prompt final para o GPT Image, com logo e pessoa 100% fiéis ao arquivo.",
+  "author": {
+    "name": "Orbe Assessoria"
+  },
+  "keywords": ["arte", "social media", "design", "gpt image", "anti-slop", "criativo", "orbe"]
+}
